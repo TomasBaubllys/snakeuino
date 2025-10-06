@@ -10,7 +10,7 @@
 This project implements a **Console like snake game** for the Arduino Uno R3 using a 160x128 pixel TFT screen and a joystick:
 
 - **Joystick** - used to control the snakes movement.
-- **TFT display** – monitors smoke levels to detect potential fire hazards.
+- **TFT display** – displays the game
 - **Button** - used for switching between different colour modes
 
 The system continously reads the user input, however the game only updates when the timer interrupt sets the tick variable to true, this enables a smoother controller experience. The joystick button is also tied to an interrupt which can either pause/unpause the game if its being played and reset the game once it is over. The extra provided button is (you guessed it) also tied to an interrupt and can change between PCB and light colour modes.
