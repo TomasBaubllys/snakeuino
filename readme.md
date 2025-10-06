@@ -1,4 +1,4 @@
-# Snake game on the arduino uno R3
+# Snake game on the Arduino Uno R3
 
 **Author:** Tomas Baublys  
 **Course:** Introduction to robotics  
@@ -7,7 +7,7 @@
 
 ## Project Overview
 
-This project implements a **Console like snake game** for the arduino uno R3 using a 160x128 pixel TFT screen and a joystick:
+This project implements a **Console like snake game** for the Arduino Uno R3 using a 160x128 pixel TFT screen and a joystick:
 
 - **Joystick** - used to control the snakes movement.
 - **TFT display** – monitors smoke levels to detect potential fire hazards.
@@ -42,7 +42,7 @@ The game also has a highscore system, that uses the arduino`s EEPROM to save it 
 You will have to create the provided wiring diagram.
 
 1. Connect the hardware according to the pinout table.
-   For more details, refer to the [Wiring Diagram (PDF)](wirring.pdf)  
+   For more details, refer to the [Wiring Diagram](wirring.jpg)  
 2. Upload the code (snakeuino.ino) to your Arduino board.
 3. Have fun!.
 
