@@ -13,7 +13,7 @@ This project implements a **Console like snake game** for the arduino uno R3 usi
 - **TFT display** – monitors smoke levels to detect potential fire hazards.
 - **Button** - used for switching between different colour modes
 
-The system continously reads the user input, however the game only updates when the timer interrupt sets the tick variable to true, this enables a smoother controller experience. The joystick button is also tied to an interrupt which can either pause/unpause the game if its being played and reset the game once it is over. The extra provided button is also tied to an interrupt and can change between PCB and light colour modes.
+The system continously reads the user input, however the game only updates when the timer interrupt sets the tick variable to true, this enables a smoother controller experience. The joystick button is also tied to an interrupt which can either pause/unpause the game if its being played and reset the game once it is over. The extra provided button is (you guessed it) also tied to an interrupt and can change between PCB and light colour modes.
 
 The game also has a highscore system, that uses the arduino`s EEPROM to save it between sessions.
 
