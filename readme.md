@@ -34,7 +34,7 @@ The system continuously monitors the sensors and responds as follows:
 - You can view or download the component list here: [partslist.csv](partslist.csv)
 
 ## Circuit Diagram
-![Circuit photo](real_wirring.png)
+![Circuit photo](real_wirring.jpg)
 
 ---
 
