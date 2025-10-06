@@ -54,11 +54,12 @@ TFT screen = TFT(CS, DC, RESET);
 #define SCORE_COLOR_LM screen.Color565(0, 0, 0)
 #define GAMEOVER_COLOR_LM screen.Color565(0, 0, 0)
 
-uint16_t fdc = FOOD_COLOR;
-uint16_t snc = SNAKE_COLOR;
-uint16_t bgc = BG_COLOR;
-uint16_t scc = SCORE_COLOR;
-uint16_t goc = GAMEOVER_COLOR;
+// variables for global colours
+uint16_t food_color = FOOD_COLOR;
+uint16_t snake_color = SNAKE_COLOR;
+uint16_t background_color = BG_COLOR;
+uint16_t score_color = SCORE_COLOR;
+uint16_t gameover_color = GAMEOVER_COLOR;
 
 // lower and higher threshold values for joystick
 #define L_T_VALUE 300
@@ -69,6 +70,7 @@ uint16_t goc = GAMEOVER_COLOR;
 #define HEADER_COLOR screen.Color565(100, 100, 100)
 
 #define HEADER_TEXT "SNAKEUINO"
+#define GAMEOVER_TEXT "GAME OVER"
 
 // global variables for interrupts
 volatile bool button_pressed_flag = false;
@@ -121,13 +123,11 @@ void setup() {
 
   // pin for button press
   pinMode(JS_BTN_PIN, INPUT_PULLUP);
-
   pinMode(EXTRA_BTN_PIN, INPUT_PULLUP);
 
   // add interrupt for button pressed
   attachInterrupt(digitalPinToInterrupt(JS_BTN_PIN), button_pressed, FALLING);
   attachInterrupt(digitalPinToInterrupt(EXTRA_BTN_PIN), color_button_pressed, FALLING);
-
 
   // set a random seed for the food
   randomSeed(analogRead(A0));
@@ -136,7 +136,7 @@ void setup() {
   food_cords[0] = random(MAX_X);
   food_cords[1] = random(MAX_Y);
 
-
+  // https://deepbluembedded.com/arduino-timer-interrupts/
   noInterrupts();           // disable interrupts during setup
   TCCR1A = 0;               // clear control register A
   TCCR1B = 0;               // clear control register B
@@ -154,7 +154,6 @@ void setup() {
 }
 
 void loop() {
-  // Serial.println(state);
   switch(state) {
     case STATE_RUN:
       handle_input();
@@ -187,22 +186,22 @@ void loop() {
   }
 
   if(color_button_pressed_flag) {
-    if(fdc == FOOD_COLOR) {
-      fdc = FOOD_COLOR_LM;
-      snc = SNAKE_COLOR_LM;
-      bgc = BG_COLOR_LM;
-      scc = SCORE_COLOR_LM;
-      goc = GAMEOVER_COLOR_LM;
+    if(food_color == FOOD_COLOR) {
+      food_color = FOOD_COLOR_LM;
+      snake_color = SNAKE_COLOR_LM;
+      background_color = BG_COLOR_LM;
+      score_color = SCORE_COLOR_LM;
+      gameover_color = GAMEOVER_COLOR_LM;
     }
     else {
-      fdc = FOOD_COLOR;
-      snc = SNAKE_COLOR;
-      bgc = BG_COLOR;
-      scc = SCORE_COLOR;
-      goc = GAMEOVER_COLOR;
+      food_color = FOOD_COLOR;
+      snake_color = SNAKE_COLOR;
+      background_color = BG_COLOR;
+      score_color = SCORE_COLOR;
+      gameover_color = GAMEOVER_COLOR;
     }
     score_condition = true;
-    screen.fillScreen(bgc);
+    screen.fillScreen(background_color);
     color_button_pressed_flag = false;
   }
 
@@ -231,7 +230,6 @@ void handle_input() {
   int x = analogRead(JS_X_PIN); // 0-1023
   int y = analogRead(JS_Y_PIN); // 0-1023
 
-  // Convert to directions with thresholds
   if (x < L_T_VALUE && dir_x != 1 && y > L_T_VALUE && y < H_T_VALUE) {          // left
     dir_x = -1;
     dir_y = 0;
@@ -268,7 +266,7 @@ void reset() {
   }
 
   state = STATE_RUN;
-  screen.background(bgc); 
+  screen.background(background_color); 
 
   food_cords[0] = random(MAX_X);
   food_cords[1] = random(MAX_Y);
@@ -293,7 +291,7 @@ void draw_cell(uint8_t x, uint8_t y, uint16_t color) {
 }
 
 void undraw_cell(uint8_t x, uint8_t y) {
-  screen.fillRect(x * CELL_SIZE, y * CELL_SIZE + GAME_OFFSET_Y, CELL_SIZE, CELL_SIZE, bgc);
+  screen.fillRect(x * CELL_SIZE, y * CELL_SIZE + GAME_OFFSET_Y, CELL_SIZE, CELL_SIZE, background_color);
 } 
 
 void update_snake() {
@@ -305,23 +303,30 @@ void update_snake() {
   int16_t new_x = snake[0] + dir_x;
   int16_t new_y = snake[1] + dir_y;
 
-  // wrap horizontally
-  if(new_x >= MAX_X) new_x = 0;
-  else if(new_x < 0) new_x = MAX_X - 1;
+  // check for out of bounds
+  if(new_x >= MAX_X) {
+    new_x = 0;
+  }
+  else if(new_x < 0) {
+    new_x = MAX_X - 1;
+  }
 
-  // wrap vertically
-  if(new_y >= MAX_Y) new_y = 0;
-  else if(new_y < 0) new_y = MAX_Y - 1;
-
+  if(new_y >= MAX_Y) {
+    new_y = 0;
+  }
+  else if(new_y < 0) {
+    new_y = MAX_Y - 1;
+  }
 
   if(new_y >= MAX_Y && new_y < 0xf0) {
     new_y = 0;    
   }
+
   else if(new_y > 0xf0) {
     new_y = MAX_Y;
   }
 
-
+  // check if food was consumed
   if(new_x == food_cords[0] && new_y == food_cords[1]) {
     eat_food();
     ++snake_size;
@@ -345,8 +350,6 @@ void update_snake() {
   // update head
   snake[0] = new_x;
   snake[1] = new_y;
-
-  // TODO: add boundary check, collision check, and food check
 }
 
 
@@ -359,7 +362,6 @@ void render() {
 
   // render the snake
   render_snake();
-
 }
 
 void render_food() {
@@ -369,7 +371,7 @@ void render_food() {
     food_consumed = false;
   }
 
-  draw_cell(food_cords[0], food_cords[1], fdc);
+  draw_cell(food_cords[0], food_cords[1], food_color);
 }
 
 void render_snake() {
@@ -379,60 +381,53 @@ void render_snake() {
   }
 
   for(uint16_t i = 0, j = 0; i < snake_size; ++i, j += 2) {
-    draw_cell(snake[j], snake[j + 1], snc);
+    draw_cell(snake[j], snake[j + 1], snake_color);
   }
 }
 
-void draw_header() {
-    // Draw game title on the left 
-    screen.stroke(snc); // green text 
-    screen.setTextSize(1); screen.text(HEADER_TEXT, 10, 5); // 
-    // x=10, y=5 inside header // Draw a horizontal line under the header 
-    screen.fillRect(0, HEADER_HEIGHT - 2, SCREEN_W, 2, scc);
+void draw_header() { 
+    // dont go here idk whats going on but it works (I hate doing calculating pixels)
+    screen.stroke(snake_color); 
+    screen.setTextSize(1); screen.text(HEADER_TEXT, 10, 5);  
+    screen.fillRect(0, HEADER_HEIGHT - 2, SCREEN_W, 2, score_color);
 
-    // Only update score if it changed
+    // Only update score if it changed or score condition was met (like starting the game or changing colors)
     if(snake_size - STARTING_SNAKE_SIZE != prev_score || score_condition) {
-        // Compute text width and position
         char scoreText[16];
         sprintf(scoreText, "S:%d H:%d", snake_size - STARTING_SNAKE_SIZE, highscore);
 
-        int textWidth = strlen(scoreText) * 6 * 1; // size 1
-        int xPos = SCREEN_W - textWidth - 4;       // 4 pixels padding from right
+        int textWidth = strlen(scoreText) * 6 * 1; 
+        int xPos = SCREEN_W - textWidth - 4;       
         int yPos = 5;
 
         // Clear the area where score was previously drawn
-        screen.fillRect(xPos, yPos, textWidth, 8 * 1, bgc); // 8 pixels height per size 1
-
-        // Draw the updated score
-        //screen.stroke(212, 175, 55); // white text
-        screen.stroke(scc); // white text
+        screen.fillRect(xPos, yPos, textWidth, 8 * 1, background_color);
+        screen.stroke(score_color);
         screen.setTextSize(1);
         screen.text(scoreText, xPos, yPos);
 
-        // Save score for next update
         prev_score = snake_size - STARTING_SNAKE_SIZE;
         score_condition = false;
     }
 }
 
 ISR(TIMER1_COMPA_vect) {
-  tick = true;  // signal main loop to update
+  tick = true;
 }
 
 void render_game_over() {
-  screen.stroke(goc); 
+  screen.stroke(gameover_color); 
   screen.setTextSize(2); 
 
   // compute the text width (approximate: each character is 6 pixels wide per size 1)
-  const char* msg = "GAME OVER";
-  int charWidth = 6 * 2; // 6 pixels per char * text size
+  const char* msg = GAMEOVER_TEXT;
+  int charWidth = 6 * 2;
   int textWidth = strlen(msg) * charWidth;
 
   // center coordinates
   int x = (SCREEN_W - textWidth) / 2;
   int y = GAME_OFFSET_Y + (GAME_H - 8 * 2) / 2; // 8 pixels height per char * text size
 
-  // render the text
   screen.text(msg, x, y);
 }
 
