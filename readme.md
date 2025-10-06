@@ -11,21 +11,11 @@ This project implements a **Console like snake game** for the arduino uno R3 usi
 
 - **Joystick** - used to control the snakes movement.
 - **TFT display** – monitors smoke levels to detect potential fire hazards.
-- **PIR motion sensor** – detects motion in the environment.
-- **Piezo buzzer** – provides audible alarms.
-- **NeoPixel LED ring** – provides visual feedback (alarm and status).
+- **Button** - used for switching between different colour modes
 
-The system continuously monitors the sensors and responds as follows:
+The system continously reads the user input, however the game only updates when the timer interrupt sets the tick variable to true, this enables a smoother controller experience. The joystick button is also tied to an interrupt which can either pause/unpause the game if its being played and reset the game once it is over. The extra provided button is also tied to an interrupt and can change between PCB and light colour modes.
 
-1. **Smoke detected**:  
-   - Red light on the NeoPixel ring.  
-   - Piezo buzzer sounds an alarm.
-
-2. **Low light & motion detected**:  
-   - White-yellow light on the NeoPixel ring is turned on.
-
-3. **No smoke or motion**:  
-   - All LEDs are turned off.
+The game also has a highscore system, that uses the arduino`s EEPROM to save it between sessions.
 
 ---
 
@@ -36,44 +26,28 @@ The system continuously monitors the sensors and responds as follows:
 ## Circuit Diagram
 ![Circuit photo](real_wirring.jpg)
 
+## Wirring Diagram
+![Wirring diagram](wirring.jpg)
+
 ---
 
 ## Software
 
 - Written in **Arduino C++**.
-- Uses the **Adafruit NeoPixel library** to control the LED ring.  
-
-## Parameters Explanation
-
-- `PHOTO_RES_THRESHOLD_VAL` – (**arbitrary**) threshold value for ambient light detection.
-- `SMOKE_DET_THRESHOLD_VAL` – (**arbitrary**) threshold value for smoke detection.
-- `NUM_OF_LEDS` – number of LEDs in NeoPixel ring.
-- `LED_ALARM_*` – RGB color for alarm state.
-- `LED_ON_*` – RGB color for normal operation.
-- `DELAY` – loop delay in milliseconds.
-- `*_PIN` - component pin numbers.
-
-### Key Functions
-
-- `setup()` – Initializes serial communication, sensor pins, and NeoPixel ring.  
-- `loop()` – Reads sensor values and updates LEDs and buzzer based on conditions.
 
 ---
 
 ## Usage
-You can either create the provided wiring diagram or explore the live Tinkercad project.
+You will have to create the provided wiring diagram.
 
 1. Connect the hardware according to the pinout table.
    For more details, refer to the [Wiring Diagram (PDF)](wirring.pdf)  
-   or view the project on [Tinkercad](https://www.tinkercad.com/things/inF08CLtjdp-corridor-automatic-lamp-with-smoke-detector?sharecode=2ZnDAHdU0eUikj-b9LfzPR57jI1qgf9tkYdIz54yzns).
-2. Install the [Adafruit NeoPixel library](https://github.com/adafruit/Adafruit_NeoPixel) in Arduino IDE.
-3. Upload the code to your Arduino board.
-4. Observe the LED ring and buzzer respond to smoke, motion, and light conditions.
+2. Upload the code (snakeuino.ino) to your Arduino board.
+3. Have fun!.
 
----
+--- 
 
-## Notes
+# Notes
+- If the game feels too fast you can adjust the value in the OCR1A register to change the frame rate
 
-- Adjust `PHOTO_RES_THRESHOLD_VAL` and `SMOKE_DET_THRESHOLD_VAL` to match your sensor calibration.
-- The buzzer uses a 523 Hz tone for 500 ms when smoke is detected.
-- The system can be extended with additional sensors or network alerts for more advanced safety systems.
+
