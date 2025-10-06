@@ -54,7 +54,7 @@ Since, Arduino Uno R3 CPU operates on 16Mhz frequency, we can use that to limit 
 The math behind it is something like this:
 We want to get arround 14fps, so thats a frame every 1/14 = 0.07 seconds or 70ms. Since we use a 64 prescalar, that means that the timer now runs at 16000000 / 64 = 250000 ticks/second. So if we set the OCR1A value to 17500, that means that the timer interrupt will happen every 17500 / 250000 = 0.07 seconds. Of course we do not have to guess the OCR1A value, we can simply solve the equation: OCR1A_value / (16000000 / prescaler) = 1/(desired_fps)
 
-You can find more information about the timer in the ATmega382P [documentation](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf).
+You can find more information about the timer in the [ATmega382P documentation](https://ww1.microchip.com/downloads/en/DeviceDoc/Atmel-7810-Automotive-Microcontrollers-ATmega328P_Datasheet.pdf).
 
 ---
 
