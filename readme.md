@@ -34,6 +34,7 @@ The game also has a highscore system, that uses the arduino`s EEPROM to save it 
 ## Software
 
 - Written in **Arduino C++**.
+- **SPI** protocol is used for the display
 
 ---
 
