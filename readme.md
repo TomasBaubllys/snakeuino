@@ -57,8 +57,8 @@ We want to get arround 14fps, so thats a frame every 1/14 = 0.07 seconds or 70ms
 ---
 
 ### EEPROM layout
-- 0x00 - 1 byte of a magic number that is used for checking whether the data has been corrupted
-- 0x01 - 1 byte for the current highscore
+- Address: 0x00 - 1 byte of a magic number that is used for checking whether the data has been corrupted
+- Address: 0x01 - 1 byte for the current highscore
 
 ---
 
