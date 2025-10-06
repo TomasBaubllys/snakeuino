@@ -27,7 +27,7 @@ The game also has a highscore system, that uses the arduino`s EEPROM to save it 
 ![Circuit photo](real_wirring.jpg)
 
 ## Wirring Diagram
-![Wirring diagram](wirring.jpg)
+![Wirring diagram](wirring.pdf)
 
 ---
 
@@ -35,6 +35,16 @@ The game also has a highscore system, that uses the arduino`s EEPROM to save it 
 
 - Written in **Arduino C++**.
 - **SPI** protocol is used for the display
+
+---
+
+### 
+
+---
+
+### EEPROM layout
+- 0x00 - 1 byte of a magic number that is used for checking whether the data has been corrupted
+- 0x01 - 1 byte for the current highscore
 
 ---
 
