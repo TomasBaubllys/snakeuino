@@ -108,6 +108,8 @@ uint8_t snake_size = STARTING_SNAKE_SIZE;
 // [0], [1] = x and y of the first cell and etc
 uint8_t snake[MAX_SNAKE_SIZE * 2] = {2, 0, 1, 0, 0, 0};
 
+bool full_snake_render_condition = true;
+
 // save the tail to undraw it
 uint8_t tail[2] = {snake[snake_size * 2 - 1], snake[snake_size * 2 - 2]};
 
@@ -201,6 +203,7 @@ void loop() {
       gameover_color = GAMEOVER_COLOR;
     }
     score_condition = true;
+    full_snake_render_condition = true;
     screen.fillScreen(background_color);
     color_button_pressed_flag = false;
   }
@@ -284,6 +287,8 @@ void reset() {
   snake[3] = 0;
   snake[4] = 0;
   snake[5] = 0;
+
+  full_snake_render_condition = true;
 } 
 
 void draw_cell(uint8_t x, uint8_t y, uint16_t color) {
@@ -381,12 +386,15 @@ void render_snake() {
   }
 
   // render only the head
-  draw_cell(snake[0], snake[1], snake_color);
-/*
-  for(uint16_t i = 0, j = 0; i < snake_size; ++i, j += 2) {
-    draw_cell(snake[j], snake[j + 1], snake_color);
+  if(!full_snake_render_condition) {
+    draw_cell(snake[0], snake[1], snake_color);
   }
-  */
+  else {
+    for(uint16_t i = 0, j = 0; i < snake_size; ++i, j += 2) {
+      draw_cell(snake[j], snake[j + 1], snake_color);
+    }
+    full_snake_render_condition = false;
+  } 
 }
 
 void draw_header() { 
