@@ -380,9 +380,13 @@ void render_snake() {
     undraw_cell(tail[0], tail[1]);
   }
 
+  // render only the head
+  draw_cell(snake[0], snake[1], snake_color);
+/*
   for(uint16_t i = 0, j = 0; i < snake_size; ++i, j += 2) {
     draw_cell(snake[j], snake[j + 1], snake_color);
   }
+  */
 }
 
 void draw_header() { 
